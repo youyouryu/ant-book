@@ -2,6 +2,7 @@ package common
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -9,17 +10,21 @@ import (
 
 type solverFunc func(r io.Reader, w io.Writer)
 
-// Check the solverFunc can answer correctly
+// Check if the solverFunc can answer correctly
 func Check(f solverFunc, qfile string, afile string) error {
-	qreader, _ := os.Open(qfile)
+	qreader, err := os.Open(qfile)
+	if err != nil {
+		return fmt.Errorf("could not open file: %s", qfile)
+	}
 	defer qreader.Close()
-	areader, _ := os.Open(afile)
+	areader, err := os.Open(afile)
+	if err != nil {
+		return fmt.Errorf("could not open file: %s", afile)
+	}
 	defer areader.Close()
-	preader, pwriter := io.Pipe()
-	defer preader.Close()
-	defer pwriter.Close()
-	f(qreader, pwriter)
-	return checkEqual(preader, areader)
+	buffer := new(bytes.Buffer)
+	f(qreader, buffer)
+	return checkEqual(buffer, areader)
 }
 
 func checkEqual(r1 io.Reader, r2 io.Reader) error {
