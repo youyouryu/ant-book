@@ -3,13 +3,18 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"sort"
 	"strconv"
 )
 
 func main() {
-	sc := bufio.NewScanner(os.Stdin)
+	solve(os.Stdin, os.Stdout)
+}
+
+func solve(reader io.Reader, writer io.Writer) {
+	sc := bufio.NewScanner(reader)
 	sc.Scan()
 	n, _ := strconv.Atoi(sc.Text())
 	edges := []int{}
@@ -18,7 +23,7 @@ func main() {
 		e, _ := strconv.Atoi(sc.Text())
 		edges = append(edges, e)
 	}
-	fmt.Println(biggestCircumference(edges))
+	fmt.Fprintln(writer, biggestCircumference(edges))
 }
 
 func biggestCircumference(edges []int) (bc int) {

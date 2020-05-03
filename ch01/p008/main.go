@@ -3,12 +3,17 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 )
 
 func main() {
-	sc := bufio.NewScanner(os.Stdin)
+	solve(os.Stdin, os.Stdout)
+}
+
+func solve(reader io.Reader, writer io.Writer) {
+	sc := bufio.NewScanner(reader)
 	sc.Scan()
 	n, _ := strconv.Atoi(sc.Text())
 	sc.Scan()
@@ -20,14 +25,13 @@ func main() {
 		nums = append(nums, num)
 	}
 	if isWinnable(m, nums, 4) {
-		fmt.Println("Yes")
+		fmt.Fprintln(writer, "Yes")
 	} else {
-		fmt.Println("No")
+		fmt.Fprintln(writer, "No")
 	}
 }
 
 func isWinnable(m int, nums []int, count int) (ans bool) {
-	fmt.Println(m, nums, count)
 	if count == 0 {
 		ans = m == 0
 		return
@@ -36,7 +40,7 @@ func isWinnable(m int, nums []int, count int) (ans bool) {
 		return
 	}
 	for _, k := range nums {
-		ans = ans || isWinnable(m-k, nums, count-1)
+		ans = isWinnable(m-k, nums, count-1)
 		if ans {
 			return
 		}
