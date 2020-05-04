@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"sort"
 	"strconv"
 )
 
@@ -25,27 +24,19 @@ func solve(stdin io.Reader, stdout io.Writer) {
 		num, _ := strconv.Atoi(sc.Text())
 		nums = append(nums, num)
 	}
-	sort.Slice(nums, func(i, j int) bool { return nums[i] < nums[j] })
-	if search(nums, k) {
+	if search(nums, k, 0) {
 		fmt.Fprintln(stdout, "Yes")
 	} else {
 		fmt.Fprintln(stdout, "No")
 	}
 }
 
-func search(nums []int, k int) bool {
-	if len(nums) == 0 {
-		return false
+func search(nums []int, k int, idx int) bool {
+	if idx == len(nums) {
+		return k == 0
 	}
-	if k == 0 {
+	if search(nums, k-nums[idx], idx+1) || search(nums, k, idx+1) {
 		return true
-	} else if k < 0 {
-		return false
-	}
-	for i := range nums {
-		if search(append(nums[:i], nums[i+1:]...), k-nums[i]) {
-			return true
-		}
 	}
 	return false
 }
