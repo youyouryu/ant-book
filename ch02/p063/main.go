@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"math"
 	"os"
+	"sort"
 	"strconv"
 )
 
@@ -23,7 +25,8 @@ func solve(stdin io.Reader, stdout io.Writer) {
 		a = append(a, ai)
 	}
 	// ans := search(a)
-	ans := search2(a)
+	// ans := search2(a)
+	ans := search3(a)
 	fmt.Fprintln(stdout, ans)
 }
 
@@ -62,5 +65,19 @@ func search2(a []int) (ans int) {
 		}
 	}
 	ans = dp[len(a)-1]
+	return
+}
+
+func search3(a []int) (ans int) {
+	dp := make([]int, len(a))
+	for i := range dp {
+		dp[i] = math.MaxInt64
+	}
+	for i := 0; i < len(a); i++ {
+		j := sort.Search(len(a), func(j int) bool { return dp[j] >= a[i] })
+		dp[j] = a[i]
+	}
+	j := sort.Search(len(a), func(j int) bool { return dp[j] >= math.MaxInt64 })
+	ans = dp[j-1]
 	return
 }
