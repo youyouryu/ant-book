@@ -22,7 +22,8 @@ func solve(stdin io.Reader, stdout io.Writer) {
 		ai, _ := strconv.Atoi(sc.Text())
 		a = append(a, ai)
 	}
-	ans := search(a)
+	// ans := search(a)
+	ans := search2(a)
 	fmt.Fprintln(stdout, ans)
 }
 
@@ -40,5 +41,26 @@ func search(a []int) (ans int) {
 			ans--
 		}
 	}
+	return
+}
+
+func search2(a []int) (ans int) {
+	// dp[i] = 末尾がa[i]のときの最長部分増加列
+	dp := make([]int, len(a))
+	for i := 0; i < len(a); i++ {
+		if i == 0 {
+			dp[i] = 1
+			continue
+		}
+		for j := 0; j < i; j++ {
+			if a[j] >= a[i] {
+				continue
+			}
+			if dp[i] < dp[j]+1 {
+				dp[i] = dp[j] + 1
+			}
+		}
+	}
+	ans = dp[len(a)-1]
 	return
 }
