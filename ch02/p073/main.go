@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"container/heap"
 	"fmt"
 	"io"
 	"os"
@@ -29,7 +30,8 @@ func solve(stdin io.Reader, stdout io.Writer) {
 		a = append(a, ai)
 		b = append(b, bi)
 	}
-	ans := search(n, l, p, a, b)
+	// ans := search(n, l, p, a, b)
+	ans := search2(n, l, p, a, b)
 	fmt.Fprintln(stdout, ans)
 }
 
@@ -87,4 +89,42 @@ func search(n, l, p int, a, b []int) int {
 		}
 	}
 	return -1
+}
+
+type intHeap []int
+
+func (h intHeap) Len() int            { return len(h) }
+func (h intHeap) Less(i, j int) bool  { return h[i] > h[j] }
+func (h intHeap) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
+func (h *intHeap) Push(x interface{}) { *h = append(*h, x.(int)) }
+func (h *intHeap) Pop() interface{} {
+	old := *h
+	n := len(old)
+	x := old[n-1]
+	*h = old[0 : n-1]
+	return x
+}
+
+func search2(n, l, p int, a, b []int) int {
+	/*
+	   通過したガソリンスタンドをヒープ上に保存しておき、
+	   必要になったら最も補給量の多いものを使用したことにする。
+	   計算量：nlogn
+	*/
+	h := intHeap{}
+	ans, x, tank := 0, 0, p
+	for i := 0; i < n; i++ {
+		dx := a[i] - x
+		for tank-dx < 0 {
+			if h.Len() == 0 {
+				return -1
+			}
+			tank += heap.Pop(&h).(int)
+			ans++
+		}
+		tank -= dx
+		x = a[i]
+		heap.Push(&h, b[i])
+	}
+	return ans
 }
