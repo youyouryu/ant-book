@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"sort"
 	"strconv"
 )
 
@@ -29,9 +28,22 @@ func solve(stdin io.Reader, stdout io.Writer) {
 
 func greedySearch(n int, l []int) (cost int) {
 	for len(l) > 1 {
-		sort.Slice(l, func(i, j int) bool { return l[i] < l[j] })
-		cost += l[0] + l[1]
-		l = append(l[2:], l[0]+l[1])
+		l0, l1 := popMin(&l), popMin(&l)
+		cost += l0 + l1
+		l = append(l, l0+l1)
 	}
+	return
+}
+
+func popMin(l *[]int) (min int) {
+	slice := *l
+	var idx int
+	for i := range slice {
+		if i == 0 || slice[i] < min {
+			min = slice[i]
+			idx = i
+		}
+	}
+	*l = append(slice[:idx], slice[idx+1:]...)
 	return
 }
