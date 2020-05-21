@@ -78,6 +78,5 @@ func search3(a []int) (ans int) {
 		dp[j] = a[i]
 	}
 	j := sort.Search(len(a), func(j int) bool { return dp[j] >= math.MaxInt64 })
-	ans = dp[j-1]
-	return
+	return j
 }
