@@ -30,7 +30,7 @@ func Check(f solverFunc, qfile string, afile string) error {
 func checkEqual(r1 io.Reader, r2 io.Reader) error {
 	sc1 := bufio.NewScanner(r1)
 	sc2 := bufio.NewScanner(r2)
-	nrows := 0
+	nrows := 1
 	for sc1.Scan() {
 		if !sc2.Scan() {
 			return fmt.Errorf("row number is not equal")
