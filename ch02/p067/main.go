@@ -34,45 +34,40 @@ func search(n, m int, a []int) int {
 	  すべて等価な個数制限付きナップザック問題として解く
 	  dp[i][j] = i種類目までを使ったj個の組み合わせ総数
 	*/
-	dp := make([][]int, n)
+	dp := make([][]int, n+1)
 	for i := range dp {
 		dp[i] = make([]int, m+1)
-		for j := 0; j < n; j++ {
-			if j == 0 || (i == 0 && j <= a[i]) {
-				dp[i][j] = 1
-			}
-		}
+		dp[i][0] = 1
 	}
-	for i := 1; i < n; i++ {
+	for i := 0; i < n; i++ {
 		for j := 1; j <= m; j++ {
 			for k := 0; k <= j && k <= a[i]; k++ {
-				dp[i][j] += dp[i-1][j-k]
+				dp[i+1][j] += dp[i][j-k]
 			}
 		}
 	}
-	return dp[n-1][m]
+	for i := range dp {
+		fmt.Println(dp[i])
+	}
+	return dp[n][m]
 }
 
 func search2(n, m int, a []int) int {
 	/*
 	   kのループを除去する
 	*/
-	dp := make([][]int, n)
+	dp := make([][]int, n+1)
 	for i := range dp {
 		dp[i] = make([]int, m+1)
-		for j := 0; j < n; j++ {
-			if j == 0 || (i == 0 && j <= a[i]) {
-				dp[i][j] = 1
-			}
-		}
+		dp[i][0] = 1
 	}
-	for i := 1; i < n; i++ {
+	for i := 0; i < n; i++ {
 		for j := 1; j <= m; j++ {
-			dp[i][j] = dp[i-1][j] + dp[i-1][j]
-			if j-a[i]-1 >= 0 {
-				dp[i][j] -= dp[i-1][j-a[i]-1]
+			dp[i+1][j] = dp[i+1][j-1] + dp[i][j]
+			if j-1-a[i] >= 0 {
+				dp[i+1][j] -= dp[i][j-1-a[i]]
 			}
 		}
 	}
-	return dp[n-1][m]
+	return dp[n][m]
 }
