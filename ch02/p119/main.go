@@ -27,17 +27,28 @@ func solve(stdin io.Reader, stdout io.Writer) {
 }
 
 func search(arr [][]rune) (ans int) {
+	pos := []int{}
 	n := len(arr)
-	fixed := 0
-	for j := n - 1; j >= 0; j-- {
-		for i := n - 1; i >= 0; i-- {
-			if arr[i][j] == '1' && i < j {
-				for k := i; k+1 < n-fixed; k++ {
-					arr[k], arr[k+1] = arr[k+1], arr[k]
-					ans++
-				}
-				fixed++
+	for i := 0; i < n; i++ {
+		p := -1
+		for j := 0; j < n; j++ {
+			if arr[i][j] == '1' {
+				p = j
 			}
+		}
+		pos = append(pos, p)
+	}
+
+	for i := 0; i < n; i++ {
+		var j int
+		for j = i; j < n; j++ {
+			if pos[j] <= i {
+				break
+			}
+		}
+		for k := j; k-1 >= i; k-- {
+			pos[k-1], pos[k] = pos[k], pos[k-1]
+			ans++
 		}
 	}
 	return ans
