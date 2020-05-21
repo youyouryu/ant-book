@@ -24,7 +24,8 @@ func solve(stdin io.Reader, stdout io.Writer) {
 		ai, _ := strconv.Atoi(sc.Text())
 		a = append(a, ai)
 	}
-	ans := lowerBound(n, func(i int) bool { return a[i] >= k })
+	// ans := lowerBound(n, func(i int) bool { return a[i] >= k })
+	ans := lowerBound2(n, func(i int) bool { return a[i] >= k })
 	fmt.Fprintln(stdout, ans)
 }
 
@@ -35,4 +36,20 @@ func lowerBound(n int, f func(int) bool) (idx int) {
 		}
 	}
 	return n
+}
+
+func lowerBound2(n int, f func(int) bool) (idx int) {
+	idx = n
+	begin, end := 0, n
+	var pivot int
+	for end-begin > 0 {
+		pivot = (begin + end) / 2
+		if f(pivot) {
+			idx = pivot
+			end = pivot
+		} else {
+			begin = pivot + 1
+		}
+	}
+	return idx
 }
