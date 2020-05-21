@@ -71,5 +71,5 @@ func searchWithHeap(n int, l []int) (cost int) {
 		heap.Push(&h, l0+l1)
 		cost += l0 + l1
 	}
-	return 0
+	return cost
 }
