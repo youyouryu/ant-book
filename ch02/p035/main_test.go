@@ -7,5 +7,7 @@ import (
 )
 
 func TestSolve1(t *testing.T) {
-	common.Check(solve, "test/q1.txt", "test/a1.txt")
+	if err := common.Check(solve, "test/q1.txt", "test/a1.txt"); err != nil {
+		t.Error(err)
+	}
 }
