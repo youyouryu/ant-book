@@ -41,9 +41,8 @@ func lowerBound(n int, f func(int) bool) (idx int) {
 func lowerBound2(n int, f func(int) bool) (idx int) {
 	idx = n
 	begin, end := 0, n
-	var pivot int
 	for end-begin > 0 {
-		pivot = (begin + end) / 2
+		pivot := (begin + end) / 2
 		if f(pivot) {
 			idx = pivot
 			end = pivot
