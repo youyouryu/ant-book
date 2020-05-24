@@ -26,7 +26,8 @@ func solve(stdin io.Reader, stdout io.Writer) {
 		a = append(a, ai)
 	}
 	// ans := search(s, a)
-	ans := search2(s, a)
+	// ans := search2(s, a)
+	ans := search3(s, a)
 	fmt.Fprintln(stdout, ans)
 }
 
@@ -64,4 +65,28 @@ func search2(s int, a []int) (ans int) {
 		}
 	}
 	return min
+}
+
+func search3(s int, a []int) (ans int) {
+	n := len(a)
+	ans = n + 1
+	first, last, sum := 0, 0, 0
+	for {
+		for last < n && sum < s {
+			sum += a[last]
+			last++
+		}
+		if sum < s {
+			break
+		}
+		if last-first < ans {
+			ans = last - first
+		}
+		sum -= a[first]
+		first++
+	}
+	if ans > n {
+		return -1
+	}
+	return ans
 }
