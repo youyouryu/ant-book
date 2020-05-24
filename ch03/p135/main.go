@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strconv"
 )
 
@@ -24,7 +25,8 @@ func solve(stdin io.Reader, stdout io.Writer) {
 		ai, _ := strconv.Atoi(sc.Text())
 		a = append(a, ai)
 	}
-	ans := search(s, a)
+	// ans := search(s, a)
+	ans := search2(s, a)
 	fmt.Fprintln(stdout, ans)
 }
 
@@ -43,4 +45,23 @@ func search(s int, a []int) (ans int) {
 		}
 	}
 	return -1
+}
+
+func search2(s int, a []int) (ans int) {
+	n := len(a)
+	sum := make([]int, n+1)
+	for i := 0; i < n; i++ {
+		sum[i+1] = sum[i] + a[i]
+	}
+	if sum[n] < s {
+		return -1
+	}
+	min := n
+	for i := 0; i < n; i++ {
+		j := sort.Search(n, func(j int) bool { return sum[j]-sum[i] >= s })
+		if j-i < min {
+			min = j - i + 1
+		}
+	}
+	return min
 }
