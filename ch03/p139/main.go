@@ -16,7 +16,8 @@ func solve(stdin io.Reader, stdout io.Writer) {
 	sc := bufio.NewScanner(stdin)
 	sc.Scan()
 	cows := []rune(sc.Text())
-	k, m := search(cows)
+	// k, m := search(cows)
+	k, m := search2(cows)
 	fmt.Fprintln(stdout, k, m)
 }
 
@@ -58,4 +59,33 @@ func toggleRange(cows []rune, begin, end int) {
 	for i := begin; i < end; i++ {
 		toggle(cows, i)
 	}
+}
+
+func search2(cows []rune) (kMin, mMin int) {
+	n := len(cows)
+	kMin, mMin = math.MaxInt64, math.MaxInt64
+	for k := 1; k < n; k++ {
+		f := make([]int, n+1)
+		sum := 0
+		m := 0
+		for i := 0; i < n; i++ {
+			sum += f[i]
+			if i-(k-1) >= 0 {
+				sum -= f[i-(k-1)]
+			}
+			reversed := sum%2 == 1
+			if (reversed && cows[i] == 'F') || (!reversed && cows[i] == 'B') {
+				if i > n-(k-1) {
+					m = math.MaxInt64
+					break
+				}
+				f[i+1] = 1
+				m++
+			}
+		}
+		if m < mMin {
+			kMin, mMin = k, m
+		}
+	}
+	return kMin, mMin
 }
