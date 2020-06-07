@@ -35,13 +35,12 @@ func solve(stdin io.Reader, stdout io.Writer) {
 func calcHeights(n int, h, r, t float64) (y []float64) {
 	y = []float64{}
 	for i := 0; i < n; i++ {
-		//yi := calcHeight(h+2*r*float64(i), t-float64(i))
 		yi := calcHeight(h, t-float64(i))
 		y = append(y, yi)
 	}
 	sort.Slice(y, func(i, j int) bool { return y[i] < y[j] })
 	for i := range y {
-		y[i] += 2.0 * r * float64(i)
+		y[i] += 2.0 * r * float64(i) / 100.0
 	}
 	return y
 }
