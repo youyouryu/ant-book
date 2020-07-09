@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"io"
 	"os"
 
 	"github.com/yuyamada/atcoder/lib"
@@ -13,66 +13,62 @@ const (
 )
 
 func main() {
-	io := lib.NewIo(os.Stdin, os.Stdout)
+	solve(os.Stdin, os.Stdout)
+}
+
+func solve(stdin io.Reader, stdout io.Writer) {
+	io := lib.NewIo(stdin, stdout)
 	defer io.Flush()
 	n := io.NextInt()
 	array := io.NextInts(n)
 	q := io.NextInt()
 	queries := make([][]int, q)
 	for i := 0; i < q; i++ {
-		query, begin, end := io.NextInt(), io.NextInt(), io.NextInt()+1
+		query, begin, end := io.NextInt(), io.NextInt(), io.NextInt()
 		queries[i] = []int{query, begin, end}
 		if query == qAdd {
 			value := io.NextInt()
 			queries[i] = append(queries[i], value)
 		}
 	}
-	ans := solve(array, queries)
+	ans := solver(array, queries)
 	for i := range ans {
 		io.Println(ans[i])
 	}
 }
 
-func solve(array []int, queries [][]int) []int {
-	fmt.Println(array, queries)
+func solver(array []int, queries [][]int) []int {
+	ans := []int{}
 	data := make([]interface{}, len(array))
 	for i := range array {
 		data[i] = array[i]
 	}
 	st := lib.NewSegmentTree(data, merge)
-	fmt.Println(st)
 	for _, v := range queries {
 		switch v[0] {
 		case qAdd:
+			begin, end, value := v[1], v[2], v[3]
+			add(st, begin, end, 0, value, 0, st.Size-st.Offset)
 		case qSum:
+			begin, end := v[1], v[2]
+			ans = append(ans, st.Calc(begin, end).(int))
 		}
 	}
-	ans := make([]int, len(queries))
 	return ans
 }
 
-type node struct {
-	value, extra int
-}
-
 func merge(a, b interface{}) interface{} {
-	na, nb := a.(node), b.(node)
-	return node{na.value + nb.value, na.extra + nb.extra}
+	return a.(int) + b.(int)
 }
 
-func queryAdd(st *lib.SegmentTree, begin, end, extra int) {
-	add(st, begin, end, extra, 0, 0, len(st.nodes)-st.offset)
-}
-
-func add(st *lib.SegmentTree, begin, end, k, extra, cBegin, cEnd int) {
+func add(st *lib.SegmentTree, begin, end, k, value, cBegin, cEnd int) {
 	if cEnd <= begin || end <= cBegin {
 		return
 	} else if begin <= cBegin && cEnd <= end {
-		nd := st.Get(k).(node)
-		nd.extra += extra
-		st.Update(k, nd)
+		st.Nodes[k] = st.Nodes[k].(int) + value*(cEnd-cBegin)
 	} else {
-		add(st, begin, end, 2*k+1, extra, cBegin, (cBegin+cEnd)/2)
-		add(st, begin, end, 2*k+2, extra, (cBegin+cEnd)/2, cEnd)
+		st.Nodes[k] = st.Nodes[k].(int) + value*(lib.Min(end, cEnd)-lib.Max(begin, cBegin))
+		add(st, begin, end, 2*k+1, value, cBegin, (cBegin+cEnd)/2)
+		add(st, begin, end, 2*k+2, value, (cBegin+cEnd)/2, cEnd)
 	}
 }
