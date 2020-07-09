@@ -1,29 +1,30 @@
 package main
 
 import (
-	"fmt"
+	"io"
 	"os"
 
 	"github.com/yuyamada/atcoder/lib"
 )
 
 func main() {
-	io := lib.NewIo(os.Stdin, os.Stdout)
+	solve(os.Stdin, os.Stdout)
+}
+
+func solve(stdin io.Reader, stdout io.Writer) {
+	io := lib.NewIo(stdin, stdout)
 	defer io.Flush()
 	n := io.NextInt()
 	a := io.NextInts(n)
-	ans := solve(a)
+	ans := solver(a)
 	io.Println(ans)
 }
 
-func solve(a []int) (ans int) {
-	fmt.Println(a)
+func solver(a []int) (ans int) {
 	bit := lib.NewBinaryIndexedTree(len(a))
 	for i := range a {
 		ans += i - bit.Sum(a[i])
 		bit.Add(a[i], 1)
-
-		fmt.Println(bit)
 	}
 	return ans
 }
