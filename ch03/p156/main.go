@@ -4,7 +4,7 @@ import (
 	"math"
 	"os"
 
-	"github.com/youyouryu/AtCoder/lib"
+	"github.com/yuyamada/AtCoder/lib"
 )
 
 func main() {

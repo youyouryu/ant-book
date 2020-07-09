@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/youyouryu/ant-book/common"
+	"github.com/yuyamada/ant-book/common"
 )
 
 func TestSolve1(t *testing.T) {
