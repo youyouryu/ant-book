@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os"
 	"sort"
 
@@ -8,18 +9,23 @@ import (
 )
 
 func main() {
-	io := lib.NewIo(os.Stdin, os.Stdout)
+	solve(os.Stdin, os.Stdout)
+}
+
+func solve(reader io.Reader, writer io.Writer) {
+	io := lib.NewIo(reader, writer)
 	defer io.Flush()
 	w, h, n := io.NextInt(), io.NextInt(), io.NextInt()
 	x1 := io.NextInts(n)
 	x2 := io.NextInts(n)
 	y1 := io.NextInts(n)
 	y2 := io.NextInts(n)
-	ans := solve(w, h, x1, x2, y1, y2)
+	ans := solver(w, h, x1, x2, y1, y2)
 	io.Println(ans)
+
 }
 
-func solve(w, h int, x1, x2, y1, y2 []int) (ans int) {
+func solver(w, h int, x1, x2, y1, y2 []int) (ans int) {
 	stage := createStage(w, h, x1, x2, y1, y2)
 	for i := range stage {
 		for j := range stage[i] {
