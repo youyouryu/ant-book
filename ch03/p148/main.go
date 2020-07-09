@@ -37,13 +37,18 @@ func search(n, m int, w, v []int) (ans int) {
 	w2, v2 := combinations(w[n/2:], v[n/2:])
 	indices1 := sortIndices(w1, v1)
 	indices2 := sortIndices(w2, v2)
+	max := 0
 	for _, idx1 := range indices1 {
-		sort.Search(len(indices2), func(i int) bool {
+		i := sort.Search(len(indices2), func(i int) bool {
 			idx2 := indices2[i]
-			return w1[idx1]+w[idx2] > m
+			return w1[idx1]+w2[idx2] > m
 		})
+		idx2 := indices2[i-1]
+		if v1[idx1]+v2[idx2] > max {
+			max = v1[idx1] + v2[idx2]
+		}
 	}
-	return
+	return max
 }
 
 func combinations(w, v []int) (wNew, vNew []int) {
