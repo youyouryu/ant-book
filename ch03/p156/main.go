@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"math"
 	"os"
 
@@ -8,7 +9,11 @@ import (
 )
 
 func main() {
-	io := lib.NewIo(os.Stdin, os.Stdout)
+	solve(os.Stdin, os.Stdout)
+}
+
+func solve(reader io.Reader, writer io.Writer) {
+	io := lib.NewIo(reader, writer)
 	defer io.Flush()
 	n, c := io.NextInt(), io.NextInt()
 	l := io.NextInts(n)
@@ -19,11 +24,10 @@ func main() {
 	for i := range x {
 		io.Printf("%.2f %.2f\n", x[i], y[i])
 	}
-
 }
 
 // O(n)
-func solve(l, s, a []int) (x, y []float64) {
+func solver(l, s, a []int) (x, y []float64) {
 	angles := make([]int, len(l))
 	for i := range angles {
 		angles[i] = 180
@@ -57,9 +61,9 @@ func solve2(l, s, a []int) (x, y []float64) {
 	st := lib.NewSegmentTree(data, merge)
 	x, y = make([]float64, len(s)), make([]float64, len(s))
 	for i := range s {
-		tgt := st.Get(s[i] - 1).(node)
+		tgt := st.Get(st.Offset + s[i] - 1).(node)
 		tgt.theta = float64(a[i])
-		st.Update(s[i]-1, tgt)
+		st.Update(st.Offset+s[i]-1, tgt)
 		top := st.Top().(node)
 		x[i], y[i] = top.x, top.y
 	}
