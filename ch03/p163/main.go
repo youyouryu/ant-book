@@ -7,11 +7,6 @@ import (
 	"github.com/yuyamada/atcoder/lib"
 )
 
-const (
-	qAdd = iota + 1
-	qSum
-)
-
 func main() {
 	solve(os.Stdin, os.Stdout)
 }
@@ -26,7 +21,7 @@ func solve(stdin io.Reader, stdout io.Writer) {
 	for i := 0; i < q; i++ {
 		query, begin, end := io.NextInt(), io.NextInt(), io.NextInt()
 		queries[i] = []int{query, begin, end}
-		if query == qAdd {
+		if query == 1 {
 			value := io.NextInt()
 			queries[i] = append(queries[i], value)
 		}
@@ -38,37 +33,52 @@ func solve(stdin io.Reader, stdout io.Writer) {
 }
 
 func solver(array []int, queries [][]int) []int {
-	ans := []int{}
-	data := make([]interface{}, len(array))
+	initialize(len(array))
 	for i := range array {
-		data[i] = array[i]
+		add(i, i+1, array[i], 0, 0, len(array))
 	}
-	st := lib.NewSegmentTree(data, merge)
-	for _, v := range queries {
-		switch v[0] {
-		case qAdd:
-			begin, end, value := v[1], v[2], v[3]
-			add(st, begin, end, 0, value, 0, st.Size-st.Offset)
-		case qSum:
-			begin, end := v[1], v[2]
-			ans = append(ans, st.Calc(begin, end).(int))
+	ans := []int{}
+	for i := range queries {
+		q := queries[i]
+		if q[0] == 1 {
+			add(q[1], q[2], q[3], 0, 0, len(array))
+		} else {
+			ans = append(ans, sum(q[1], q[2], 0, 0, len(array)))
 		}
 	}
 	return ans
 }
 
-func merge(a, b interface{}) interface{} {
-	return a.(int) + b.(int)
+var stSum, stAdd []int
+
+func initialize(n int) {
+	depth := 0
+	for 1<<depth < n {
+		depth++
+	}
+	stSum = make([]int, 1<<(depth+1)-1)
+	stAdd = make([]int, 1<<(depth+1)-1)
 }
 
-func add(st *lib.SegmentTree, begin, end, k, value, cBegin, cEnd int) {
-	if cEnd <= begin || end <= cBegin {
-		return
-	} else if begin <= cBegin && cEnd <= end {
-		st.Nodes[k] = st.Nodes[k].(int) + value*(cEnd-cBegin)
+func add(a, b, x, k, l, r int) {
+	if a <= l && r <= b {
+		stAdd[k] += x
+	} else if l < b && a < r {
+		stSum[k] += (lib.Min(b, r) - lib.Max(a, l)) * x
+		add(a, b, x, 2*k+1, l, (l+r)/2)
+		add(a, b, x, 2*k+2, (l+r)/2, r)
+	}
+}
+
+func sum(a, b, k, l, r int) int {
+	if b <= l || r <= a {
+		return 0
+	} else if a <= l && r <= b {
+		return stAdd[k]*(r-l) + stSum[k]
 	} else {
-		st.Nodes[k] = st.Nodes[k].(int) + value*(lib.Min(end, cEnd)-lib.Max(begin, cBegin))
-		add(st, begin, end, 2*k+1, value, cBegin, (cBegin+cEnd)/2)
-		add(st, begin, end, 2*k+2, value, (cBegin+cEnd)/2, cEnd)
+		res := (lib.Min(b, r) - lib.Max(a, l)) * stAdd[k]
+		res += sum(a, b, 2*k+1, l, (l+r)/2)
+		res += sum(a, b, 2*k+2, (l+r)/2, r)
+		return res
 	}
 }
