@@ -10,5 +10,7 @@ github.com/yuyamada/atcoder v0.0.0-20200709082750-bebd9afbc50e h1:sdkRlLwZxBD1iu
 github.com/yuyamada/atcoder v0.0.0-20200709082750-bebd9afbc50e/go.mod h1:aK36bWmPdcX2b2EOXyg22wZRzNM5ClgLG7QSfwG1ne8=
 github.com/yuyamada/atcoder v0.0.0-20200709111617-48d80e2dfc10 h1:84BSOUVm8euYj9j6WwIGD+hOzCYpJ6fxjk6mgVvYruo=
 github.com/yuyamada/atcoder v0.0.0-20200709111617-48d80e2dfc10/go.mod h1:aK36bWmPdcX2b2EOXyg22wZRzNM5ClgLG7QSfwG1ne8=
+github.com/yuyamada/atcoder v0.0.0-20200719104324-b4a9066f4b0d h1:Ut8b+YQiEwkeV5d9EAPV9nCEi2KShaiymYg3TB9+qKk=
+github.com/yuyamada/atcoder v0.0.0-20200719104324-b4a9066f4b0d/go.mod h1:aK36bWmPdcX2b2EOXyg22wZRzNM5ClgLG7QSfwG1ne8=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
